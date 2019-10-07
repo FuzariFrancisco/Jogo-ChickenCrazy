@@ -16,7 +16,7 @@ Por: [***Francisco Henrique***](https://www.linkedin.com/in/francisco-henrique-0
 * **Seta direcional Esquerda:** Faz a galinha se mover para a esquerda.
 * **Seta direcional Direita:** Faz a galinha se mover para a direita.
 
-![Capa RetroLander](Imagens-ReadMe/Capa-CrazyChicken.PNG)
+![Capa RetroLander](Imagens-ReadMe/Game-CrazyChicken.PNG)
 
 ## Para Executar:
 * WEB: Na pasta Executável-WEB Rode o arquivo index.html e ele abrirá no seu navegador.
