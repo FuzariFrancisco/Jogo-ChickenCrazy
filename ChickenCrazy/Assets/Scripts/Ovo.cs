@@ -6,6 +6,8 @@ public class Ovo : MonoBehaviour
 {
     public GameObject galinha;
     public GameObject raposa;
+    Rigidbody2D rb2D;
+    bool parado = false;
 
     public GameController controller;
 
@@ -13,24 +15,36 @@ public class Ovo : MonoBehaviour
 
     void Start()
     {
-        
+        rb2D = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        
+        if (!parado)
+        {
+            transform.Translate(Vector3.down * 0.12f);
+        }
+
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.tag=="Chao")
+        {
+            Debug.Log("Colidiu");
+            parado = true;
+        }
+
         if (collision.gameObject == raposa)
         {
             ResetaOvo();
+            parado = false;
         }
 
         if (collision.gameObject == galinha)
         {
             ResetaOvo();
+            parado = false;
             controller.Pontuou();
         }
     }

@@ -4,36 +4,68 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public KeyCode esquerda;
-    public KeyCode direita;
     public KeyCode pulo;
     public GameObject raposa, vida1, vida2, vida3;
     SpriteRenderer render;
     public GameController controller;
     int contaMortes = 0;
+    private Rigidbody2D rb2D;
+    private Animator animacao;
+    float horizontal, velocidade = 10f, MinusVelocidade = -10f;
+    public bool noChao = false;
+    bool direita = false, esquerda = false;
+    Vector2 fundoEsquerda, topoDireita;
 
     void Start()
     {
         render = GetComponent<SpriteRenderer>();
+        rb2D = GetComponent<Rigidbody2D>();
+        animacao = GetComponent<Animator>();
+        fundoEsquerda = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
+        topoDireita = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        
-        if (Input.GetKey(esquerda))
+        Movimentar();
+        Animacao();
+        Pulo();
+    }
+
+    void Movimentar()
+    {
+        if (Input.GetKey(KeyCode.LeftArrow) && !esquerda)
         {
-            transform.Translate(Vector3.left * 0.11f);
+            rb2D.velocity = new Vector2(MinusVelocidade, rb2D.velocity.y);
             render.flipX = true;
         }
-        if (Input.GetKey(direita))
+
+        if (Input.GetKey(KeyCode.RightArrow) && !direita)
         {
-            transform.Translate(Vector3.right * 0.11f);
+            rb2D.velocity = new Vector2(velocidade, rb2D.velocity.y);
             render.flipX = false;
         }
-        if (Input.GetKey(pulo))
+    }
+
+    void Animacao()
+    {
+        if (/*Input.GetKey(KeyCode.A) ||*/ Input.GetKey(KeyCode.LeftArrow) ||
+            /*Input.GetKey(KeyCode.D) || */Input.GetKey(KeyCode.RightArrow))
         {
-            transform.Translate(Vector3.up * 0.15f);
+            animacao.SetBool("Andando", true);
+        }
+        else
+        {
+            animacao.SetBool("Andando", false);
+        }
+    }
+
+    void Pulo()
+    {
+        if (/*Input.GetButtonDown("Jump")*/Input.GetKey(KeyCode.UpArrow) && noChao)
+        {
+            rb2D.AddForce(new Vector2(0f, 12f), ForceMode2D.Impulse);
         }
     }
 
@@ -45,7 +77,7 @@ public class Player : MonoBehaviour
             if (contaMortes == 1)
             {
                 Destroy(vida1);
-                transform.position = new Vector2(0,0);
+                transform.position = new Vector2(0,2);
             }else if (contaMortes == 2)
             {
                 Destroy(vida2);
@@ -60,4 +92,27 @@ public class Player : MonoBehaviour
 
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Esquerda")
+        {
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            esquerda = true;
+        }
+
+        if (collision.gameObject.tag == "Direita")
+        {
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            direita = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {        
+            esquerda = false;               
+            direita = false;        
+    }
+
+
 }
